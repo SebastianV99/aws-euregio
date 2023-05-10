@@ -34,7 +34,13 @@ L.control.scale({
     imperial: false,
 }).addTo(map);
 
+//Wetterstationen
+async function showStations(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json()
+
 // Vienna Sightseeing Haltestellen ?? Wetterstationen
+
 L.geoJSON(jsondata, {
     pointToLayer: function (feature, latlng) {
         return L.marker(latlng, {
@@ -50,19 +56,19 @@ L.geoJSON(jsondata, {
             let mas = feature.geometry.coordinates[2]
             console.log(mas)
             layer.bindPopup(`
-                <h1>${prop.name}, ${mas} m ü.A. </h1>
+                <h1>${prop.name}, ${mas} m ü. NN. </h1>
                 <ul>
-                    <li>Lufttemperatur (Grad Celsius °): ${prop.LT || "Keine Messungen vorhanden"} </li>
-                    <li>relative Luftfeuchte (%): ${prop.RH || "Keine Messungen vorhanden"} </li>
-                    <li>Windgeschwindigkeit (km/h): ${prop.WG || "Keine Messungen vorhanden"}</li>
-                    <li>Schneehöhe (cm): ${prop.WG || "Keine Messungen vorhanden"}</li>
-                </ul></> 
+                    <li>Lufttemperatur (in Grad Celsius): ${prop.LT || "Keine Messungen vorhanden"} </li>
+                    <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
+                    <li>Windgeschwindigkeit (in km/h): ${prop.WG || "Keine Messungen vorhanden"}</li>
+                    <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
+                </ul 
             `);
         }
-    }).addTo(themaLayer.stops);
-    console.log(response, jsondata)
-
+    }).addTo(themaLayer.stations);
+    //console.log(response, jsondata)
 }
+
 
     // Wetterstationen mit Icons und Popups implementieren
 
