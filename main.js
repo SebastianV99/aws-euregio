@@ -35,33 +35,29 @@ L.control.scale({
 }).addTo(map);
 
 // Vienna Sightseeing Haltestellen ?? Wetterstationen
-async function showStations(url) {
-    let response = await fetch(url);
-    let jsondata = await response.json();
-    L.geoJSON(jsondata, {
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng, {
-                icon: L.icon({
-                    iconUrl: `icons/icons.png`,
-                    //iconSize: [32, 37],
-                    iconAnchor: [16, 37], 
-                    popupAnchor: [0, -37],
-                })
-            });
-        },
+L.geoJSON(jsondata, {
+    pointToLayer: function (feature, latlng) {
+        return L.marker(latlng, {
+            icon: L.icon({
+                iconUrl: "icons/icons.png",
+                iconAnchor: [16, 37],
+                popupAnchor: [0, -37]
+            })
+        });
+    },
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
+            let mas = feature.geometry.coordinates[2]
+            console.log(mas)
             layer.bindPopup(`
-        <h4> ${prop.name} </h4> <br>
-        <h5> </h5>
-        <ul>
-        ${prop.LT} 
-        ${prop.RH}
-        ${prop.WG}
-        ${prop.HS}
-        </ul>
+                <h1>${prop.name}, ${mas} m ü.A. </h1>
+                <ul>
+                    <li>Lufttemperatur (Grad Celsius °): ${prop.LT || "Keine Messungen vorhanden"} </li>
+                    <li>relative Luftfeuchte (%): ${prop.RH || "Keine Messungen vorhanden"} </li>
+                    <li>Windgeschwindigkeit (km/h): ${prop.WG || "Keine Messungen vorhanden"}</li>
+                    <li>Schneehöhe (cm): ${prop.WG || "Keine Messungen vorhanden"}</li>
+                </ul></> 
             `);
-             console.log(prop)
         }
     }).addTo(themaLayer.stops);
     console.log(response, jsondata)
