@@ -40,6 +40,14 @@ L.control.scale({
     imperial: false,
 }).addTo(map);
 
+function getColor(value, ramp) {
+    for (let rule of ramp) {
+        if (value >= rule.min && value < rule.max) {
+            return rule.color;
+        }
+    }
+}
+//console.log(getColor(-40, COLORS.temperature));
 
 function writeStationLayer(jsondata) {
     // Vienna Sightseeing Haltestellen ?? Wetterstationen
@@ -57,9 +65,9 @@ function writeStationLayer(jsondata) {
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
             let pointInTime = new Date(prop.date);
-            console.log(pointInTime)
+            //console.log(pointInTime)
             let mas = feature.geometry.coordinates[2]
-            console.log(mas)
+            //console.log(mas)
             layer.bindPopup(`
             <h1>${prop.name}, ${mas} m ü. NN. </h1>
             <ul>
@@ -83,10 +91,11 @@ function writeTemperatureLayer(jsondata) {
             }
         },
         pointToLayer: function (feature, latlng) {
+            let color = getColor(feature.properties.LT,COLORS.temperature);
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className:"aws-div-icon",
-                    html: `<span>${feature.properties.LT.toFixed(1)}</span>`
+                    html: `<span style ="background-color: ${color}">${feature.properties.LT.toFixed(1)}</span>`
                 }),
                 
 
