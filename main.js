@@ -54,6 +54,8 @@ L.geoJSON(jsondata, {
     },
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
+            let pointInTime = new Date (prop.date);
+            console.log(pointInTime)
             let mas = feature.geometry.coordinates[2]
             console.log(mas)
             layer.bindPopup(`
@@ -63,11 +65,12 @@ L.geoJSON(jsondata, {
                     <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
                     <li>Windgeschwindigkeit (in km/h): ${(prop.WG*3.6).toFixed(1)|| "Keine Messungen vorhanden"}</li>
                     <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
-                </ul 
+                </ul>
+                <span>${pointInTime.toLocaleString()} </span>
             `);
         }
     }).addTo(themaLayer.stations);
-    //console.log(response, jsondata)
+    console.log(response, jsondata)
 }
 
 
