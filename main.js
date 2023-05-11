@@ -32,10 +32,14 @@ let layerControl = L.control.layers({
     "Temperatur": themaLayer.temperature.addTo(map)
 }).addTo(map);
 
+//Layer Control expandiert
+layerControl.expand();
+
 // Maßstab
 L.control.scale({
     imperial: false,
 }).addTo(map);
+
 
 function writeStationLayer(jsondata) {
     // Vienna Sightseeing Haltestellen ?? Wetterstationen
@@ -82,7 +86,7 @@ function writeTemperatureLayer(jsondata) {
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className:"aws-div-icon",
-                    html: `<span>${feature.properties.LT}</span>`
+                    html: `<span>${feature.properties.LT.toFixed(1)}</span>`
                 }),
                 
 
