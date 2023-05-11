@@ -15,6 +15,7 @@ let map = L.map("map", {
 let themaLayer = {
     stations: L.featureGroup().addTo(map),
     temperature: L.featureGroup(),
+    wind: L.featureGroup().addTo(map),
 }
 
 // Hintergrundlayer
@@ -29,7 +30,8 @@ let layerControl = L.control.layers({
     "Esri WorldImagery": L.tileLayer.provider("Esri.WorldImagery")
 }, {
     "Wetterstationen": themaLayer.stations,
-    "Temperatur": themaLayer.temperature.addTo(map)
+    "Temperatur": themaLayer.temperature.addTo(map),
+    "Wind": themaLayer.wind,
 }).addTo(map);
 
 //Layer Control expandiert
@@ -66,8 +68,7 @@ function writeStationLayer(jsondata) {
             let prop = feature.properties;
             let pointInTime = new Date(prop.date);
             //console.log(pointInTime)
-            let mas = feature.geometry.coordinates[2]
-            //console.log(mas)
+            let mas = feature.geometry.coordinates[2];
             layer.bindPopup(`
             <h1>${prop.name}, ${mas} m ü. NN. </h1>
             <ul>
@@ -85,23 +86,44 @@ function writeStationLayer(jsondata) {
 
 function writeTemperatureLayer(jsondata) {
     L.geoJSON(jsondata, {
-        filter: function(feature){
-            if (feature.properties.LT > -50 && feature.properties.LT <50) {
+        filter: function (feature) {
+            if (feature.properties.LT > -50 && feature.properties.LT < 50) {
                 return true;
             }
         },
         pointToLayer: function (feature, latlng) {
-            let color = getColor(feature.properties.LT,COLORS.temperature);
+            let color = getColor(feature.properties.LT, COLORS.temperature);
             return L.marker(latlng, {
                 icon: L.divIcon({
-                    className:"aws-div-icon",
+                    className: "aws-div-icon",
                     html: `<span style ="background-color: ${color}">${feature.properties.LT.toFixed(1)}</span>`
                 }),
-                
+
 
             })
         }
     }).addTo(themaLayer.temperature)
+}
+
+function writeWindLayer(jsondata) {
+    L.geoJSON(jsondata, {
+        filter: function (feature) {
+            if (feature.properties.WG > 0 && feature.properties.WG < 300) {
+                return true;
+            }
+        },
+        pointToLayer: function (feature, latlng) {
+            let color = getColor((feature.properties.WG), COLORS.wind);
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style ="background-color: ${color}">${feature.properties.WG.toFixed(1)}</span>`
+                }),
+
+
+            })
+        }
+    }).addTo(themaLayer.wind)
 }
 
 //Wetterstationen
@@ -110,8 +132,8 @@ async function loadStations(url) {
     let jsondata = await response.json()
     writeStationLayer(jsondata);
     writeTemperatureLayer(jsondata);
+    writeWindLayer(jsondata);
 
-    
 }
 
 
