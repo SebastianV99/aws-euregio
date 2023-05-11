@@ -28,7 +28,7 @@ let layerControl = L.control.layers({
     "Esri WorldTopoMap": L.tileLayer.provider("Esri.WorldTopoMap"),
     "Esri WorldImagery": L.tileLayer.provider("Esri.WorldImagery")
 }, {
-    "Wetterstationen": themaLayer.stations.addTo(map),
+    "Wetterstationen": themaLayer.stations,
     "Temperatur": themaLayer.temperature.addTo(map)
 }).addTo(map);
 
@@ -68,7 +68,27 @@ function writeStationLayer(jsondata) {
         `);
         }
     }).addTo(themaLayer.stations);
-    console.log(response, jsondata)
+    //console.log(response, jsondata)
+}
+
+function writeTemperatureLayer(jsondata) {
+    L.geoJSON(jsondata, {
+        filter: function(feature){
+            if (feature.properties.LT > -50 && feature.properties.LT <50) {
+                return true;
+            }
+        },
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className:"aws-div-icon",
+                    html: `<span>${feature.properties.LT}</span>`
+                }),
+                
+
+            })
+        }
+    }).addTo(themaLayer.temperature)
 }
 
 //Wetterstationen
@@ -76,6 +96,7 @@ async function loadStations(url) {
     let response = await fetch(url);
     let jsondata = await response.json()
     writeStationLayer(jsondata);
+    writeTemperatureLayer(jsondata);
 
     
 }
