@@ -14,6 +14,7 @@ let map = L.map("map", {
 // thematische Layer
 let themaLayer = {
     stations: L.featureGroup().addTo(map),
+    temperature: L.featureGroup(),
 }
 
 // Hintergrundlayer
@@ -27,7 +28,8 @@ let layerControl = L.control.layers({
     "Esri WorldTopoMap": L.tileLayer.provider("Esri.WorldTopoMap"),
     "Esri WorldImagery": L.tileLayer.provider("Esri.WorldImagery")
 }, {
-    "Wetterstationen": themaLayer.stations.addTo(map)
+    "Wetterstationen": themaLayer.stations.addTo(map),
+    "Temperatur": themaLayer.temperature.addTo(map)
 }).addTo(map);
 
 // Maßstab
@@ -35,46 +37,51 @@ L.control.scale({
     imperial: false,
 }).addTo(map);
 
-//Wetterstationen
-async function showStations(url) {
-    let response = await fetch(url);
-    let jsondata = await response.json()
+function writeStationLayer(jsondata) {
+    // Vienna Sightseeing Haltestellen ?? Wetterstationen
 
-// Vienna Sightseeing Haltestellen ?? Wetterstationen
-
-L.geoJSON(jsondata, {
-    pointToLayer: function (feature, latlng) {
-        return L.marker(latlng, {
-            icon: L.icon({
-                iconUrl: "icons/icons.png",
-                iconAnchor: [16, 37],
-                popupAnchor: [0, -37]
-            })
-        });
-    },
+    L.geoJSON(jsondata, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: "icons/icons.png",
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -37]
+                })
+            });
+        },
         onEachFeature: function (feature, layer) {
             let prop = feature.properties;
-            let pointInTime = new Date (prop.date);
+            let pointInTime = new Date(prop.date);
             console.log(pointInTime)
             let mas = feature.geometry.coordinates[2]
             console.log(mas)
             layer.bindPopup(`
-                <h1>${prop.name}, ${mas} m ü. NN. </h1>
-                <ul>
-                    <li>Lufttemperatur (in °C): ${prop.LT || "Keine Messungen vorhanden"} </li>
-                    <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
-                    <li>Windgeschwindigkeit (in km/h): ${(prop.WG*3.6).toFixed(1)|| "Keine Messungen vorhanden"}</li>
-                    <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
-                </ul>
-                <span>${pointInTime.toLocaleString()} </span>
-            `);
+            <h1>${prop.name}, ${mas} m ü. NN. </h1>
+            <ul>
+                <li>Lufttemperatur (in °C): ${prop.LT || "Keine Messungen vorhanden"} </li>
+                <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
+                <li>Windgeschwindigkeit (in km/h): ${(prop.WG * 3.6).toFixed(1) || "Keine Messungen vorhanden"}</li>
+                <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
+            </ul>
+            <span>${pointInTime.toLocaleString()} </span>
+        `);
         }
     }).addTo(themaLayer.stations);
     console.log(response, jsondata)
 }
 
+//Wetterstationen
+async function loadStations(url) {
+    let response = await fetch(url);
+    let jsondata = await response.json()
+    writeStationLayer(jsondata);
 
-    // Wetterstationen mit Icons und Popups implementieren
+    
+}
 
 
-showStations("https://static.avalanche.report/weather_stations/stations.geojson");
+// Wetterstationen mit Icons und Popups implementieren
+
+
+loadStations("https://static.avalanche.report/weather_stations/stations.geojson");
