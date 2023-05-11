@@ -60,7 +60,7 @@ L.geoJSON(jsondata, {
                 <ul>
                     <li>Lufttemperatur (in °C): ${prop.LT || "Keine Messungen vorhanden"} </li>
                     <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
-                    <li>Windgeschwindigkeit (in km/h): ${prop.WG || "Keine Messungen vorhanden"}</li>
+                    <li>Windgeschwindigkeit (in km/h): ${(prop.WG*3.6).toFixed(1)|| "Keine Messungen vorhanden"}</li>
                     <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
                 </ul 
             `);
