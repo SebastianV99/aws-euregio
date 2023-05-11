@@ -58,7 +58,7 @@ L.geoJSON(jsondata, {
             layer.bindPopup(`
                 <h1>${prop.name}, ${mas} m ü. NN. </h1>
                 <ul>
-                    <li>Lufttemperatur (in Grad Celsius): ${prop.LT || "Keine Messungen vorhanden"} </li>
+                    <li>Lufttemperatur (in °C): ${prop.LT || "Keine Messungen vorhanden"} </li>
                     <li>relative Luftfeuchte (in %): ${prop.RH || "Keine Messungen vorhanden"} </li>
                     <li>Windgeschwindigkeit (in km/h): ${prop.WG || "Keine Messungen vorhanden"}</li>
                     <li>Schneehöhe (in cm): ${prop.HS || "Keine Messungen vorhanden"}</li>
