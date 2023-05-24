@@ -16,6 +16,7 @@ let themaLayer = {
     stations: L.featureGroup().addTo(map),
     temperature: L.featureGroup(),
     wind: L.featureGroup().addTo(map),
+    schneehöhen: L.featureGroup(),
 }
 
 // Hintergrundlayer
@@ -32,6 +33,7 @@ let layerControl = L.control.layers({
     "Wetterstationen": themaLayer.stations,
     "Temperatur": themaLayer.temperature.addTo(map),
     "Wind": themaLayer.wind,
+    "Schneehöhe": themaLayer.schneehöhen,
 }).addTo(map);
 
 //Layer Control expandiert
@@ -133,6 +135,7 @@ async function loadStations(url) {
     writeStationLayer(jsondata);
     writeTemperatureLayer(jsondata);
     writeWindLayer(jsondata);
+    writeSchneehöheLayer(jsondata);
 
 }
 
