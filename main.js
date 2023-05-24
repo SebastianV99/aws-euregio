@@ -128,6 +128,26 @@ function writeWindLayer(jsondata) {
     }).addTo(themaLayer.wind)
 }
 
+function writeSchneehöhenLayer(jsondata) {
+    L.geoJSON(jsondata, {
+        filter: function (feature) {
+            if (feature.properties.HS >= 0 && feature.properties.HS < 1000) {
+                return true
+            }
+        },
+        pointToLayer: function (feature, latlng) {
+            let color = getColor(feature.properties.HS, COLORS.schneehöhen)
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    //span ist ein Bereich, nur für 1 Zeile
+                    html: `<span style="background-color:${color}">${feature.properties.HS.toFixed(2)}</span>`
+                })
+            });
+        },
+    }).addTo(themaLayer.schneehöhen)
+}
+
 //Wetterstationen
 async function loadStations(url) {
     let response = await fetch(url);
