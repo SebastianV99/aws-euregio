@@ -155,7 +155,7 @@ async function loadStations(url) {
     writeStationLayer(jsondata);
     writeTemperatureLayer(jsondata);
     writeWindLayer(jsondata);
-    writeSchneehöheLayer(jsondata);
+    writeSchneehöhenLayer(jsondata);
 
 }
 
