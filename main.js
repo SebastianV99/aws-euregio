@@ -33,7 +33,7 @@ let layerControl = L.control.layers({
     "Wetterstationen": themaLayer.stations,
     "Temperatur": themaLayer.temperature.addTo(map),
     "Wind": themaLayer.wind,
-    "Schneehöhe": themaLayer.schneehöhen,
+    "Schneehöhe": themaLayer.schneehöhen.addTo(map)
 }).addTo(map);
 
 //Layer Control expandiert
